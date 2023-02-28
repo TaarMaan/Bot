@@ -3,6 +3,7 @@ package com.example.bot.service;
 import com.example.bot.config.BotConfig;
 import com.example.bot.model.Repository;
 import com.example.bot.model.User;
+import com.vdurmont.emoji.EmojiParser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -89,7 +90,9 @@ static final String HELP_TEXT = "This bot is created to demonstrate.\n\n" +
     }
 
     private void startCommandReceived(long chatId, String name) {
-        String answer = "Hi, " + name + ", nice to meet you";
+
+
+        String answer = EmojiParser.parseToUnicode("Hi, " + name + ", nice to meet you"+ ":blush:");
         log.info("Replied to user " + name);
         sendMessage(chatId, answer);
     }

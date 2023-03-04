@@ -43,7 +43,28 @@ public class Diary {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     Date DateAdd;
 
-    public Diary(){
+    //ID пользователя
+    private Long chatId;
+
+    //Имя пользователя Telegram
+    private String firstName;
+
+    @Override
+    public String toString() {
+        return "Diary{" +
+                "id=" + id +
+                ", nameTitle='" + nameTitle + '\'' +
+                ", category='" + category + '\'' +
+                ", rating=" + rating +
+                ", favourites=" + favourites +
+                ", description='" + description + '\'' +
+                ", DateAdd=" + DateAdd +
+                ", chatId=" + chatId +
+                ", firstName='" + firstName + '\'' +
+                '}';
+    }
+
+    public Diary() {
 
     }
 }

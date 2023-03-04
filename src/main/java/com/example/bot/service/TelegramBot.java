@@ -70,7 +70,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                     prepareAndSendMessage(user.getChatId(), textToSend);
                 }
             } else {
-
+                //start,date,deletedate,help,settings,add,delete.
                 switch (messageText) {
                     case "/start" -> {
                         registerUser(update.getMessage());

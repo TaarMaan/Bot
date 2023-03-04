@@ -13,6 +13,6 @@ public class Ads {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-//Текст сообщения для всех пользователей
+    //Текст сообщения для всех пользователей
     private String ad;
 }

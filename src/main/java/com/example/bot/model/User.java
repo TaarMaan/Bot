@@ -7,12 +7,12 @@ import java.sql.Timestamp;
 
 @Entity(name = "usersDataTable")
 public class User {
-
+    //ID пользователя
     @Id
     private Long chatId;
-
+    //Имя пользователя Telegram
     private String firstName;
-
+    //Время регистрирования в боте (/start)
     private Timestamp registerAt;
 
     public Long getChatId() {

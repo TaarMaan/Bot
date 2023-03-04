@@ -1,9 +1,6 @@
 package com.example.bot.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,6 +13,6 @@ public class Ads {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
+//Текст сообщения для всех пользователей
     private String ad;
 }

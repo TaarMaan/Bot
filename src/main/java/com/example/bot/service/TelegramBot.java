@@ -32,13 +32,15 @@ import java.util.List;
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
     //Объекты
+    private final SendMessage message = new SendMessage();
+    private final EditMessageText editMessageText = new EditMessageText();
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private AdsRepository AdsRepository;
     @Autowired
     private DiaryRepository diaryRepository;
-    @Autowired
+    //@Autowired
     //private Favourites favourites;
     final BotConfig botConfig;
 
@@ -67,18 +69,22 @@ public class TelegramBot extends TelegramLongPollingBot {
                 var textToSend = EmojiParser.parseToUnicode(messageText.substring(messageText.indexOf(" ")));
                 var users = userRepository.findAll();
                 for (User user : users) {
-                    prepareAndSendMessage(user.getChatId(), textToSend);
+                    sendMessage(user.getChatId(), textToSend);
                 }
             } else {
-                //start,date,deletedate,help,settings,add,delete.
+                //start,data,deletedate,help,settings,add,delete.
                 switch (messageText) {
                     case "/start" -> {
                         registerUser(update.getMessage());
                         startCommandReceived(chatId, update.getMessage().getChat().getFirstName());
                     }
-                    case "/help" -> prepareAndSendMessage(chatId, Fields.HELP_TEXT);
-                    case "/register" -> register(chatId);
-                    default -> prepareAndSendMessage(chatId, "Sorry, this command is unknown for bot");
+                    case "/data" -> register(chatId);
+                    case "/deletedata" -> register(chatId);
+                    case "/help" -> sendMessage(chatId, Fields.HELP_TEXT);
+                    case "/add" -> keyboardSendMessage(chatId);
+                    case "/delete" -> keyboardSendMessage(chatId);
+                    case "/favourite" -> keyboardSendMessage(chatId);
+                    default -> sendMessage(chatId, "Sorry, this command is unknown for bot");
                 }
             }
         } else if (update.hasCallbackQuery()) {
@@ -97,10 +103,35 @@ public class TelegramBot extends TelegramLongPollingBot {
 
 
     }
+    // Метод дублирующий логику отправления сообщения боту в /add,/delete
+    // для удобства команды, которые могут отправлять чаще всего добавлены на клавиатуру
+    private void keyboardSendMessage(long chatId){
+        message.setChatId(String.valueOf(chatId));
 
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+        replyKeyboardMarkup.setResizeKeyboard(true);
+        List<KeyboardRow> keyboardMain = new ArrayList<>();
+        KeyboardRow keyboard = new KeyboardRow();
+
+        keyboard.add("/add");
+        keyboard.add("/delete");
+        keyboardMain.add(keyboard);
+
+        replyKeyboardMarkup.setKeyboard(keyboardMain);
+        message.setReplyMarkup(replyKeyboardMarkup);
+        executeMessage(message);
+    }
+    private void executeEditMessageText(String text, long chatId, long messageId) {
+        editMessageText.setChatId(String.valueOf(chatId));
+        editMessageText.setText(text);
+        editMessageText.setMessageId((int) messageId);
+        try {
+            execute(editMessageText);
+        } catch (TelegramApiException e) {
+            log.error(Fields.ERROR_TEXT + e.getMessage());
+        }
+    }
     private void register(long chatId) {
-
-        SendMessage message = new SendMessage();
         message.setChatId(String.valueOf(chatId));
         message.setText("Do you really want to register?");
 
@@ -128,6 +159,17 @@ public class TelegramBot extends TelegramLongPollingBot {
         executeMessage(message);
     }
 
+
+
+
+
+
+
+    /**
+     * /start
+     * registerUser - регистрация нового пользователя в базе пользователей
+     * startCommandReceived - Вывод приветственного сообщения
+     */
     private void registerUser(Message message) {
         if (userRepository.findById(message.getChatId()).isEmpty()) {
             var chatId = message.getChatId();
@@ -144,53 +186,27 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
 
     }
-
     private void startCommandReceived(long chatId, String name) {
-        String answer = EmojiParser.parseToUnicode("Hi, " + name + ", nice to meet you" + ":blush:");
+        String answer = EmojiParser.parseToUnicode("Hi, " + name + ", nice to meet you!" + ":blush:" + "Now, the bot has recorded your data"+ ":blush:" );
         log.info("Replied to user " + name);
         sendMessage(chatId, answer);
     }
 
+
+    /**
+     * Функции для бота
+     * sendMessage - //Метод отправляющий сообщение боту
+     * executeMessage - //Логирование сообщения ошибки
+     * sendAds - Логика для задания таймера отправления рекламы /send владельцем
+     * @Scheduled(cron = "0 * * * * *") - аннотация, которая выполняется при выполнении
+     * и реализуя делай из cron, задает определенный интервал повторения сообщения для всех юзеров
+     * меняем * -> 0, если хотим задать данный таймер. Первый знак - секунды, второй - минуты и.т.д.
+     */
     private void sendMessage(long chatId, String textToSend) {
-        SendMessage message = new SendMessage();
         message.setChatId(String.valueOf(chatId));
         message.setText(textToSend);
-
-        //реализация клавиатуры для всех сообщений однотипно
-        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
-        replyKeyboardMarkup.setResizeKeyboard(true);
-        List<KeyboardRow> keyboardRows = new ArrayList<>();
-
-        KeyboardRow keyboardRow = new KeyboardRow();
-
-        keyboardRow.add("weather");
-
-        keyboardRows.add(keyboardRow);
-
-        keyboardRow = new KeyboardRow();
-
-        keyboardRow.add("/register");
-
-        keyboardRows.add(keyboardRow);
-
-        replyKeyboardMarkup.setKeyboard(keyboardRows);
-        message.setReplyMarkup(replyKeyboardMarkup);
         executeMessage(message);
     }
-
-    private void executeEditMessageText(String text, long chatId, long messageId) {
-        EditMessageText message = new EditMessageText();
-        message.setChatId(String.valueOf(chatId));
-        message.setText(text);
-        message.setMessageId((int) messageId);
-
-        try {
-            execute(message);
-        } catch (TelegramApiException e) {
-            log.error(Fields.ERROR_TEXT + e.getMessage());
-        }
-    }
-
     private void executeMessage(SendMessage message) {
         try {
             execute(message);
@@ -198,23 +214,13 @@ public class TelegramBot extends TelegramLongPollingBot {
             log.error(Fields.ERROR_TEXT + e.getMessage());
         }
     }
-
-    private void prepareAndSendMessage(long chatId, String textToSend) {
-        SendMessage message = new SendMessage();
-        message.setChatId(String.valueOf(chatId));
-        message.setText(textToSend);
-        executeMessage(message);
-    }
-
     @Scheduled(cron = "${cron.scheduler}")
     private void sendAds() {
-
         var ads = AdsRepository.findAll();
         var users = userRepository.findAll();
-
         for (Ads ad : ads) {
             for (User user : users) {
-                prepareAndSendMessage(user.getChatId(), ad.getAd());
+                sendMessage(user.getChatId(), ad.getAd());
             }
         }
     }

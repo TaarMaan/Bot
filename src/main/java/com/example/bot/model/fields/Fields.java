@@ -9,10 +9,11 @@ public class Fields {
             "Type /data to see data stored about yourself\n\n" +
             "Type /deletedata to delete this data about yourself\n\n" +
             "Type /help to see this message again\n\n" +
-            "Type /settings to ...\n\n" +
             "Type /add to add some titles in diary bot, example command:\n\n" +
             "...\n\n" +
             "Type /delete to delete some titles in diary bot,example command:\\n\\n" +
+            "...\n\n" +
+            "Type /favourite to show list of your favourite titles,example command:\\n\\n" +
             "...";
 
     static public final String YES_BUTTON = "YES_BUTTON";

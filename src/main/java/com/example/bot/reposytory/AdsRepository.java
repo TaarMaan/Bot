@@ -1,7 +1,7 @@
 package com.example.bot.reposytory;
 
 import com.example.bot.model.Ads;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface AdsRepository extends CrudRepository<Ads, Long> {
+public interface AdsRepository extends JpaRepository<Ads, Long> {
 }

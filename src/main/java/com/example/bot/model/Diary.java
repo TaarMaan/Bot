@@ -22,7 +22,7 @@ public class Diary {
 
     //Название добавляемого тайтла
     @NotNull
-    private String nameTitle;
+    private String name;
 
     //Название для категории: полный метр, короткий метр, сериал, аниме, фильм и.т.д.
     @NotNull
@@ -32,35 +32,22 @@ public class Diary {
     @NotNull
     private Double rating;
 
-    //Входит ли в избранное
-    private Boolean favourites;
-
     //Строка для описания
+    @Column(length = 10000)
     private String description;
-
     //Дата создание записи
     @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     Date DateAdd;
 
-    //ID пользователя
-    private Long chatId;
-
-    //Имя пользователя Telegram
-    private String firstName;
-
     @Override
     public String toString() {
         return "Diary{" +
                 "id=" + id +
-                ", nameTitle='" + nameTitle + '\'' +
+                ", nameTitle='" + name + '\'' +
                 ", category='" + category + '\'' +
                 ", rating=" + rating +
-                ", favourites=" + favourites +
                 ", description='" + description + '\'' +
-                ", DateAdd=" + DateAdd +
-                ", chatId=" + chatId +
-                ", firstName='" + firstName + '\'' +
                 '}';
     }
 

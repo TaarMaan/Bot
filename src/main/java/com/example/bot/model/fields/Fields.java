@@ -6,17 +6,13 @@ public class Fields {
     static public final String HELP_TEXT = "This bot was created in order to keep a record of viewed: movies, TV series, anime, etc.\n\n" +
             "You can execute commands from the pop-up menu from the bottom left, such as:\n\n" +
             "Type /start to registration in bot system\n\n" +
-            "Type /data to see data stored about yourself\n\n" +
-            "Type /deletedata to delete this data about yourself\n\n" +
             "Type /help to see this message again\n\n" +
             "Type /add to add some titles in diary bot, example command:\n\n" +
             "...\n\n" +
+            "Type /title to get a random title from the diary of \n\n" +
             "Type /delete to delete some titles in diary bot,example command:\\n\\n" +
-            "...\n\n" +
-            "Type /favourite to show list of your favourite titles,example command:\\n\\n" +
             "...";
 
     static public final String YES_BUTTON = "YES_BUTTON";
     static public final String NO_BUTTON = "NO_BUTTON";
-    static public final String ERROR_TEXT = "Error occurred: ";
-}
+    static public final String ERROR_TEXT = "Error occurred: ";}

@@ -23,6 +23,30 @@ public class User {
     //Время регистрирования в боте (/start)
     private Timestamp registerAt;
 
+    public Long getChatId() {
+        return chatId;
+    }
+
+    public void setChatId(Long chatId) {
+        this.chatId = chatId;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public Timestamp getRegisterAt() {
+        return registerAt;
+    }
+
+    public void setRegisterAt(Timestamp registerAt) {
+        this.registerAt = registerAt;
+    }
+
     @Override
     public String toString() {
         return "User{" +

@@ -1,6 +1,7 @@
 package com.example.bot.config;
 
 import com.example.bot.service.TelegramBot;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -14,6 +15,7 @@ import static com.example.bot.model.fields.Fields.ERROR_TEXT;
 
 @Slf4j
 @Component
+@AllArgsConstructor
 public class BotInitializer {
     @Autowired
     TelegramBot bot;

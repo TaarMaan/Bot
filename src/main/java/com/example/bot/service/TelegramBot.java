@@ -4,12 +4,12 @@ import com.example.bot.config.BotConfig;
 import com.example.bot.model.Ads;
 import com.example.bot.model.Diary;
 import com.example.bot.reposytory.DiaryRepository;
+//import com.example.bot.reposytory.Favourites;
 import com.example.bot.reposytory.UserRepository;
 import com.example.bot.model.User;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vdurmont.emoji.EmojiParser;
 import lombok.extern.slf4j.Slf4j;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.type.TypeFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -19,12 +19,17 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import com.example.bot.model.fields.Fields;
 
-import java.io.File;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -39,6 +44,8 @@ public class TelegramBot extends TelegramLongPollingBot{
     private AdsRepository AdsRepository;
     @Autowired
     private DiaryRepository diaryRepository;
+    //@Autowired
+    //private Favourites favourites;
     final BotConfig botConfig;
 
     @Override
@@ -74,20 +81,11 @@ public class TelegramBot extends TelegramLongPollingBot{
                 switch (messageText) {
                     case "/start" -> {registerUser(update.getMessage());
                         startCommandReceived(chatId, update.getMessage().getChat().getFirstName());
-                    try{
-                        ObjectMapper objectMapper = new ObjectMapper();
-                        TypeFactory typeFactory = objectMapper.getTypeFactory();
-                        List<Diary> diaryList = objectMapper.readValue(new File("src/main/resources/diary.json"),
-                        typeFactory.constructCollectionType(List.class, Diary.class));
-                        diaryRepository.saveAll(diaryList);
                     }
-                    catch (Exception e){
-                        log.error(Arrays.toString(e.getStackTrace()));
-                    }}
                     case "/help" -> sendMessage(chatId, Fields.HELP_TEXT);
                     //case "/add" -> addCommandReceived(update.getMessage(),chatId,update.getMessage().getChat().getFirstName(),);
-                    //case "/title" -> ;
                     //case "/delete" -> keyboardSendMessage(chatId);
+                    //case "/favourite" -> keyboardSendMessage(chatId);
                     default -> sendMessage(chatId, "Sorry, this command is unknown for bot");
                 }
             }
@@ -122,7 +120,7 @@ public class TelegramBot extends TelegramLongPollingBot{
     private void addCommandReceived(Message message, long chatId, String name, Diary diary) {
         //String text = update.getMessage().getText();
         String[] arr = message.getText().split(" ");
-        diary.setName(arr[0]);
+        diary.setNameTitle(arr[0]);
         diary.setCategory(arr[1]);
         diary.setRating(Double.valueOf(arr[2]));
         diary.setDescription(arr[3]);
@@ -160,7 +158,7 @@ public class TelegramBot extends TelegramLongPollingBot{
     }
 
     private void startCommandReceived(long chatId, String name) {
-        String answer = EmojiParser.parseToUnicode("Hi, "+ name + ", nice to meet you!" + ":blush:" + "Now, the bot has recorded your data" + ":blush:");
+        String answer = EmojiParser.parseToUnicode("Hi, " + name + ", nice to meet you!" + ":blush:" + "Now, the bot has recorded your data" + ":blush:");
         log.info("Replied to user " + name);
         sendMessage(chatId, answer);
     }

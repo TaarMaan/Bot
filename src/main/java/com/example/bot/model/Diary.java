@@ -32,9 +32,6 @@ public class Diary {
     @NotNull
     private Double rating;
 
-    //Входит ли в избранное
-    private Boolean favourites;
-
     //Строка для описания
     private String description;
 
@@ -56,7 +53,6 @@ public class Diary {
                 ", nameTitle='" + nameTitle + '\'' +
                 ", category='" + category + '\'' +
                 ", rating=" + rating +
-                ", favourites=" + favourites +
                 ", description='" + description + '\'' +
                 ", DateAdd=" + DateAdd +
                 ", chatId=" + chatId +

@@ -3,7 +3,6 @@ package com.example.bot.service;
 import com.example.bot.config.BotConfig;
 import com.example.bot.model.Ads;
 import com.example.bot.reposytory.DiaryRepository;
-//import com.example.bot.reposytory.Favourites;
 import com.example.bot.reposytory.UserRepository;
 import com.example.bot.model.User;
 import com.vdurmont.emoji.EmojiParser;
@@ -40,8 +39,6 @@ public class TelegramBot extends TelegramLongPollingBot {
     private AdsRepository AdsRepository;
     @Autowired
     private DiaryRepository diaryRepository;
-    //@Autowired
-    //private Favourites favourites;
     final BotConfig botConfig;
 
     @Override
@@ -78,12 +75,9 @@ public class TelegramBot extends TelegramLongPollingBot {
                         registerUser(update.getMessage());
                         startCommandReceived(chatId, update.getMessage().getChat().getFirstName());
                     }
-                    case "/data" -> register(chatId);
-                    case "/deletedata" -> register(chatId);
                     case "/help" -> sendMessage(chatId, Fields.HELP_TEXT);
                     case "/add" -> keyboardSendMessage(chatId);
                     case "/delete" -> keyboardSendMessage(chatId);
-                    case "/favourite" -> keyboardSendMessage(chatId);
                     default -> sendMessage(chatId, "Sorry, this command is unknown for bot");
                 }
             }
